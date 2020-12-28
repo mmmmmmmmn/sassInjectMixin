@@ -1,0 +1,25 @@
+{
+  "name": "sassInjectMixin",
+  "version": "1.0.0",
+  "private": true,
+  "description": "original sass mixin to inject parent element",
+  "scripts": {
+    "build": "gulp"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mmmmmmmmn/sassInjectMixin.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mmmmmmmmn/sassInjectMixin/issues"
+  },
+  "homepage": "https://github.com/mmmmmmmmn/sassInjectMixin#readme",
+  "devDependencies": {
+    "gulp": "^4.0.2",
+    "gulp-cli": "^2.3.0",
+    "gulp-sass": "^4.1.0"
+  }
+}

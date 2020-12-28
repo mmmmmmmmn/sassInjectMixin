@@ -1,0 +1,74 @@
+@mixin inject ($betweenSelectors, $additionalClassName) {
+    $parsedAllSelectors: selector-parse(&);
+    $parsedBetweenSelectors: selector-parse($betweenSelectors);
+
+    $r: length($parsedAllSelectors) / length($parsedBetweenSelectors);
+
+    $injectedAllSelectors: ();
+
+    @for $i from 1 through length($parsedAllSelectors) {
+        $parsedAllSelector: nth($parsedAllSelectors, $i);
+        $parsedBetweenSelector: nth($parsedBetweenSelectors, floor(($i - 1) / $r) + 1);
+
+        $n: length($parsedBetweenSelector);
+        $target: nth($parsedAllSelector, $n);
+        $appendedTarget: selector-append($target, '.#{$additionalClassName}');
+        $injectedSelector: set-nth($parsedAllSelector, $n, $appendedTarget);
+
+        $injectedAllSelectors: append($injectedAllSelectors, $injectedSelector, $separator: comma);
+    }
+
+    @at-root #{$injectedAllSelectors} {
+        @content
+    }
+};
+
+@mixin injectRoot ($additionalClassName) {
+    $rootSelectors: ();
+
+    @each $parsedAllSelector in selector-parse(&) {
+        $rootSelectors: append($rootSelectors, nth($parsedAllSelector, 1), $separator: comma);
+    }
+
+
+    @include inject($rootSelectors, $additionalClassName) {
+        @content
+    }
+};
+
+main, // 要素名のみ
+.root, // クラス名のみ
+#root, // id のみ
+main.root, // 要素名 + クラス名
+main#root, // 要素名 + id
+main:first-of-type // 要素名 + 擬似クラス
+    {
+    >.deep {
+        >.nested_1,
+        >.nested_2 {
+            $target: &;
+
+            >.selector1,
+            >.selector2_1>.selector2_2,
+            >.selector3_1+.selector3_2 {
+                &:before {
+                    // 共通のスタイル
+                    display: block;
+                    font-size: 20px;
+                    font-weight: 700;
+                    line-height: 1.5em;
+
+                    // 個別のスタイル(ルートで分岐)
+                    @include injectRoot(red_class) {
+                        color: red;
+                    }
+
+                    // 個別のスタイル(途中で分岐)
+                    @include inject($target, blue_class) {
+                        color: blue;
+                    }
+                }
+            }
+        }
+    }
+}
